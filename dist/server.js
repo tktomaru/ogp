@@ -56,7 +56,7 @@ function buildOgpHtml(uuid1, uuid2) {
     // uuid2 から画像番号を決定（URLごとに固定の「ランダムっぽい」画像）
     const imageIndex = hashToImageIndex(uuid2, TOTAL_IMAGES);
     const padded = String(imageIndex).padStart(4, '0'); // 0001〜1000
-    const pageUrl = `${SITE_ORIGIN}/ogp/${uuid1}/${uuid2}`;
+    const pageUrl = `${SITE_ORIGIN}/ogp/${uuid1}`;
     const imageUrl = `${SITE_ORIGIN}/images/ogp/${padded}.png`; // 画像は public/images/ogp/0001.png〜 を想定
     const randomJapanese = generateRandomJapanese(10);
     const title = '固定タイトル：' + randomJapanese;
@@ -109,15 +109,26 @@ app.get('/ogp', (req, res) => {
     res.redirect(302, `/ogp/${uuid1}/${uuid2}`);
 });
 /**
- * /ogp/:uuid1/:uuid2 にアクセスされたときに
+ * /ogp/:uuid1/ にアクセスされたときに
  * OGPメタタグ入りのHTMLを返す
  */
-app.get('/ogp/:uuid1/:uuid2', (req, res) => {
-    const { uuid1, uuid2 } = req.params;
+app.get('/ogp/:uuid1', (req, res) => {
+    const uuid2 = (0, crypto_1.randomUUID)();
+    const { uuid1 } = req.params;
     const html = buildOgpHtml(uuid1, uuid2);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(html);
 });
+/**
+ * /ogp/:uuid1/:uuid2 にアクセスされたときに
+ * OGPメタタグ入りのHTMLを返す
+ */
+// app.get('/ogp/:uuid1/:uuid2', (req, res) => {
+//   const { uuid1, uuid2 } = req.params;
+//   const html = buildOgpHtml(uuid1, uuid2);
+//   res.setHeader('Content-Type', 'text/html; charset=utf-8');
+//   res.send(html);
+// });
 /**
  * 静的ファイル配信（Reactビルド & 画像など）
  * ビルド先によってパスを合わせてください。
@@ -129,11 +140,12 @@ const publicDir = path_1.default.join(__dirname, '..', 'public');
 // const publicDir = path.join(__dirname, '..', 'dist');
 app.use(express_1.default.static(publicDir));
 /**
- * それ以外のパスは SPA 用の index.html を返す
- * 例: /encdec, /qr など
+ * それ以外のパス
  */
 app.get('*', (req, res) => {
-    res.sendFile(path_1.default.join(publicDir, 'index.html'));
+    // res.sendFile(path.join(publicDir, 'index.html'));
+    const uuid1 = (0, crypto_1.randomUUID)();
+    res.redirect(302, `/ogp/${uuid1}`);
 });
 app.listen(PORT, () => {
     console.log(`Server started on ${SITE_ORIGIN}`);

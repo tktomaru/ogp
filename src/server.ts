@@ -62,7 +62,7 @@ function buildOgpHtml(uuid1: string, uuid2: string): string {
   const imageIndex = hashToImageIndex(uuid2, TOTAL_IMAGES);
   const padded = String(imageIndex).padStart(4, '0'); // 0001〜1000
 
-  const pageUrl = `${SITE_ORIGIN}/ogp/${uuid1}/${uuid2}`;
+  const pageUrl = `${SITE_ORIGIN}/ogp/${uuid1}`;
   const imageUrl = `${SITE_ORIGIN}/images/ogp/${padded}.png`; // 画像は public/images/ogp/0001.png〜 を想定
 
   const randomJapanese = generateRandomJapanese(10);
