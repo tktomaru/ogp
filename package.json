@@ -1,0 +1,22 @@
+{
+  "name": "ogp-server",
+  "version": "1.0.0",
+  "description": "OGP server (Express + TypeScript, CommonJS)",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "generate:ogp-images": "tsx src/generateOgpImages.ts"
+  },
+  "dependencies": {
+    "canvas": "^3.2.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.7.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.3"
+  }
+}

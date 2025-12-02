@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  ogp:
+    build:
+      context: .
+      dockerfile: Dockerfile   # Node用 Dockerfile
+    container_name: ogp-server
+    environment:
+      - PORT=3000
+      # OGPで使う絶対URL（Apache 側の公開URLに合わせる）
+      - SITE_ORIGIN=https://ogp.tukutano.jp
+    expose:
+      - "3000"
+    volumes:
+      # server.ts 内で public を参照している場合に備えて
+      - ./public:/app/public:ro
+
+  web:
+    build:
+      context: ./apache
+      dockerfile: Dockerfile   # Apache用 Dockerfile（後述）
+    container_name: apache-web
+    ports:
+      - "31017:80"
+    volumes:
+      # 静的コンテンツ
+      - ./public:/usr/local/apache2/htdocs:ro
+    depends_on:
+      - ogp
